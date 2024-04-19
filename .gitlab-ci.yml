@@ -2,7 +2,7 @@ stages:
   - build
   - push
 
-image: Docker:latest
+image: docker:latest
 
 services:
   - docker:dind
