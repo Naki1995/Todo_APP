@@ -11,7 +11,7 @@ build_image:
   stage: build
   script:
     - echo "Building image from dockerfile"
-    - docker build -t my_app:$CI_COMMIT_SHORT_SHA
+    - docker build -t my_app:$CI_COMMIT_SHORT_SHA .
     - docker save my_app:$CI_COMMIT_SHORT_SHA > my_app_$CI_COMMIT_SHORT_SHA.tar.gz
   artifacts:
     expire_in: 1h
