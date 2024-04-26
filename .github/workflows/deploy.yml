@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: docker-latest
+    runs-on: ubuntu-latest
     environment: staging
     services:
       docker:
