@@ -1,0 +1,56 @@
+name: CI Pipeline 2
+on: 
+  push:
+    branches:
+      - "feature/narek"
+
+
+jobs:
+  build:
+    runs-on: docker-latest
+    environment: staging
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+    steps:
+      - name: build image
+        uses: docker build -t my_todo_app:${{ github.sha }}
+              docker save my_todo_app:${{ github.sha }} > my_todo_app_${{ github.sha }}.tar.gz
+      - name: Upload Docker Images as Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+            name: docker-image
+            path:
+              my-app_${{ github.sha }}.tar.gz
+            retention-days: 1
+
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+
+      - name: Load and Push Image
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} docker.io
+          docker load < my_todo_app_${{ github.sha }}.tar.gz
+          docker tag my_todo_app:${{ github.sha }} ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:${{ github.sha }}
+          docker tag my_todo_app:${{ github.sha }} ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:latest
+          docker push ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:latest
+
+
+      
+    
+
+
+
