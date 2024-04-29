@@ -23,7 +23,7 @@ jobs:
         
       - name: build images
         run: |
-              docker build -t my_todo_app:${{ github.sha }} ../../
+              docker build -t my_todo_app:${{ github.sha }} .
               docker save my_todo_app:${{ github.sha }} > my_todo_app_${{ github.sha }}.tar.gz
 
       - name: Upload Docker Images as Artifacts
