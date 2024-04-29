@@ -31,7 +31,7 @@ jobs:
         with:
             name: docker-image
             path:
-              my-app_${{ github.sha }}.tar.gz
+              my_todo_app${{ github.sha }}.tar.gz
             retention-days: 1
 
   push:
@@ -51,7 +51,7 @@ jobs:
       - name: Load and Push Images
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} docker.io
-          docker load < my_todo_app_${{ github.sha }}.tar.gz
+          docker load < my_todo_app${{ github.sha }}.tar.gz
           docker tag my_todo_app:${{ github.sha }} ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:${{ github.sha }}
           docker tag my_todo_app:${{ github.sha }} ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:latest
           docker push ${{ secrets.DOCKER_NAMESPACE }}/my_todo_app:${{ github.sha }}
